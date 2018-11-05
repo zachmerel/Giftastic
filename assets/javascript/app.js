@@ -3,6 +3,8 @@ var shows = ["The Simpsons", "Malcom in the Middle", "Breaking Bad", "Shameless"
 // displayMovieInfo function re-renders the HTML to display the appropriate content
 function displayTVInfo() {
 
+    
+
   var tvShow = $(this).attr("data-name");
   var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
   tvShow + "&api_key=JmdbcXSaY4GSJKJRJfuc815gRUIOu4Jd";
@@ -11,22 +13,37 @@ function displayTVInfo() {
   $.ajax({
     url: queryURL,
     method: "GET"
-  }).then(function(response) {
+  })
+  .then(function(response) {
+    // Storing an array of results in the results variable
+    console.log(response)
+    var results = response.data;
 
-    // Creating a div to hold the tvShow
-    var tvShowDiv = $("<div class='tvShow'>");
+    // Looping over every result item
+    for (var i = 0; i < results.length; i++) {
+        // Creating a div for the gif
+        var gifDiv = $("<div>");
 
-    // Storing the rating data
-    var rating = response.rating;
+        // Storing the result item's rating
+        var rating = results[i].rating;
 
-    // Creating an element to have the rating displayed
-    var pOne = $("<p>").text("Rating: " + rating);
+        // Creating a paragraph tag with the result item's rating
+        var p = $("<p>").text("Rating: " + rating);
 
-    // Displaying the rating
-    tvShowDiv.append(pOne);
+        // Creating an image tag
+        var personImage = $("<img>");
 
-    // Putting the entire movie above the previous movies
-    $("#tvShow-view").prepend(tvShowDiv);
+        // Giving the image tag an src attribute of a proprty pulled off the
+        // result item
+        personImage.attr("src", results[i].images.fixed_height.url);
+
+        // Appending the paragraph and personImage we created to the "gifDiv" div we created
+        gifDiv.append(p);
+        gifDiv.append(personImage);
+
+        // Prepending the gifDiv to the "#gifs-appear-here" div in the HTML
+        $("#gifs-appear-here").prepend(gifDiv);
+      }
   });
 
 }
@@ -64,11 +81,11 @@ $("#add-tv").on("click", function(event) {
   // Adding tv show from the textbox to our array
   shows.push(tv);
 
-  // Calling renderButtons which handles the processing of our movie array
+  // Calling renderButtons which handles the processing of our shows array
   renderButtons();
 });
 
-// Adding a click event listener to all elements with a class of "movie-btn"
+// Adding a click event listener to all elements with a class of "tvShow-btn"
 $(document).on("click", ".tvShow-btn", displayTVInfo);
 
 // Calling the renderButtons function to display the intial buttons
