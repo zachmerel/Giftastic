@@ -2,9 +2,6 @@ var shows = ["The Simpsons", "Malcom in the Middle", "Breaking Bad", "Shameless"
 
 // displayMovieInfo function re-renders the HTML to display the appropriate content
 function displayTVInfo() {
-
-
-
     var tvShow = $(this).attr("data-name");
     var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
         tvShow + "&api_key=JmdbcXSaY4GSJKJRJfuc815gRUIOu4Jd&limit=10";
@@ -20,8 +17,8 @@ function displayTVInfo() {
 
             // Looping over every result item
             for (var i = 0; i < results.length; i++) {
-                // Creating a div for the gif
-                var gifDiv = $("<div>");
+                // Creating a div for the gif with id to place double click on
+                var gifDiv = $(`<div id=doubleclick>`);
 
                 // Storing the result item's rating
                 var rating = results[i].rating;
@@ -31,7 +28,6 @@ function displayTVInfo() {
 
                 // Creating an image tag
                 var tvShowImage = $("<img>");
-
                 // Giving the image tag an src attribute of a proprty pulled off the
                 // result item
                 tvShowImage.attr("src", results[i].images.original_still.url);
@@ -43,6 +39,20 @@ function displayTVInfo() {
                 tvShowImage.attr("tvShow-animate", results[i].images.original.url);
                 // gives image a class of gif
                 tvShowImage.addClass("gif");
+
+
+                
+                
+                $("#doubleclick").dblclick(function () {
+                  //double click takes everything inside div of what was double click stores it to localstorage
+                     localStorage.setItem("favorite gifs",$(this)[0].innerHTML);
+                     var favoriteGifs = localStorage.getItem("favorite gifs")
+                    $("#favorite-gifs").html(`<div>${favoriteGifs}</div>`);
+                    console.log($(this)[0].innerHTML);
+                });
+
+
+
 
                 // Appending the paragraph and tvShowImage we created to the "gifDiv" div we created
                 gifDiv.append(tvShowImage);
@@ -107,9 +117,13 @@ $("#add-tv").on("click", function (event) {
     // Calling renderButtons which handles the processing of our shows array
     renderButtons();
 });
-
 // Adding a click event listener to all elements with a class of "tvShow-btn"
 $(document).on("click", ".tvShow-btn", displayTVInfo);
+
+//clears local storage and favorite gifs held there
+$("#clear").on("click",function (){
+    localStorage.clear();
+});
 
 // Calling the renderButtons function to display the intial buttons
 renderButtons();
