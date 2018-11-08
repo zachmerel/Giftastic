@@ -2,42 +2,44 @@ var shows = ["The Simpsons", "Malcom in the Middle", "Breaking Bad", "Shameless"
 
 // displayMovieInfo function re-renders the HTML to display the appropriate content
 
-function singleClick (){
-$("img.gif").on("click", function () {
-    console.log("single click working")
-    // The attr jQuery method allows us to get or set the value of any attribute on our HTML element
-    var state = $(this).attr("data-state");
-    // If the clicked image's state is still, update its src attribute to what its data-animate value is.
-    // Then, set the image's data-state to animate
-    // Else set src to the data-still value
-    if (state === "still") {
-        $(this).attr("src", $(this).attr("tvShow-animate"));
-        $(this).attr("data-state", "animate");
-    } else {
-        $(this).attr("src", $(this).attr("tvShow-still"));
-        $(this).attr("data-state", "still");
-    }
-});
+function singleClick() {
+    $("img.gif").on("click", function () {
+        console.log("single click working")
+        // The attr jQuery method allows us to get or set the value of any attribute on our HTML element
+        var state = $(this).attr("data-state");
+        // If the clicked image's state is still, update its src attribute to what its data-animate value is.
+        // Then, set the image's data-state to animate
+        // Else set src to the data-still value
+        if (state === "still") {
+            $(this).attr("src", $(this).attr("tvShow-animate"));
+            $(this).attr("data-state", "animate");
+        } else {
+            $(this).attr("src", $(this).attr("tvShow-still"));
+            $(this).attr("data-state", "still");
+        }
+    });
 }
-function doubleClick(){
-$(".doubleclick").dblclick(function () {
-    // event.preventDefault();
-    console.log("double click working")
-    var favoriteGif = localStorage.getItem("favoriteGifs")
-    if (favoriteGif == null){
-        favoriteGif = "";
-    }
-    // double click takes everything inside div of what was double click stores it to localstorage
-    var newFavoriteGif = $(this)[0].innerHTML
-   favoriteGif  += newFavoriteGif;
-   localStorage.setItem("favoriteGifs", favoriteGif);
-    $("#favorite-gifs").append(`<div>${newFavoriteGif}</div>`);
-    console.log(newFavoriteGif);
-    singleClick ();
-    
-});
+function doubleClick() {
+    $(".doubleclick").dblclick(function () {
+        // event.preventDefault();
+        console.log("double click working")
+        var favoriteGif = localStorage.getItem("favoriteGifs")
+        if (favoriteGif == null) {
+            favoriteGif = "";
+        }
+        // double click takes everything inside div of what was double click stores it to localstorage
+        var newFavoriteGif = $(this)[0].innerHTML
+        favoriteGif += newFavoriteGif;
+        localStorage.setItem("favoriteGifs", favoriteGif);
+        $("#favorite-gifs").append(`<div>${newFavoriteGif}</div>`);
+        console.log(newFavoriteGif);
+        singleClick();
+
+    });
 }
 function displayTVInfo() {
+    //empties gifs for new gifs
+    $("#gifs-appear-here").empty();
     var tvShow = $(this).attr("data-name");
     var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
         tvShow + "&api_key=JmdbcXSaY4GSJKJRJfuc815gRUIOu4Jd&limit=10";
@@ -75,19 +77,21 @@ function displayTVInfo() {
                 tvShowImage.attr("tvShow-animate", results[i].images.original.url);
                 // gives image a class of gif
                 tvShowImage.addClass("gif");
-               
+
 
                 // Appending the paragraph and tvShowImage we created to the "gifDiv" div we created
                 gifDiv.append(tvShowImage);
                 gifDiv.append(p);
 
                 // Prepending the gifDiv to the "#gifs-appear-here" div in the HTML
+
                 $("#gifs-appear-here").prepend(gifDiv);
             }
-            singleClick ();
+            singleClick();
             doubleClick();
-            
+
         });
+    
 }
 
 // Function for displaying tv show data
@@ -137,4 +141,4 @@ $("#clear").on("click", function () {
 
 // Calling the renderButtons function to display the intial buttons
 renderButtons();
-$("#favorite-gifs").html(localStorage.getItem("favoriteGifs")||"");
+$("#favorite-gifs").html(localStorage.getItem("favoriteGifs") || "");
